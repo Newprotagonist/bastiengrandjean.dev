@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  html-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate HTML
+        # Pinned: tested locally against this version. html-validate >= 11
+        # needs Node >= 22; bump both together deliberately, not by drift.
+        run: npx --yes html-validate@8 "site/**/*.html"
+
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check internal links (offline)
+        # Will fail until site/cv.pdf and site/en/cv.pdf exist — that's the
+        # point, not a bug: don't let a merge paper over a 404 on the CV link.
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --no-progress --root-dir site site/**/*.html
+          fail: true
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: docker/setup-buildx-action@v3
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: portfolio:ci

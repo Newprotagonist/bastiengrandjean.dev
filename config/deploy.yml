@@ -1,0 +1,27 @@
+# Troisième service sur le même VPS Hetzner que movethespark.com et
+# cookitgreen.com. L'IP vient d'une variable d'environnement, pas du repo :
+# ce dépôt est public (il sert aussi de vitrine).
+service: portfolio
+image: newprotagonist/portfolio
+
+servers:
+  web:
+    - <%= ENV.fetch("PORTFOLIO_SERVER_IP") %>
+
+proxy:
+  hosts:
+    - bastiengrandjean.dev
+    - www.bastiengrandjean.dev
+  ssl: true
+  app_port: 80
+  healthcheck:
+    path: /up
+
+registry:
+  server: ghcr.io
+  username: newprotagonist
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  arch: amd64
