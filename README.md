@@ -28,6 +28,9 @@ sont tous relatifs, ça fonctionne pareil.
 
 ## Déployer
 
+Site statique, pas de `Gemfile` : utiliser la gem `kamal` installée
+globalement (`gem install kamal` si besoin), pas de `bin/kamal`.
+
 Nécessite `KAMAL_REGISTRY_PASSWORD` (jeton GitHub, scope `write:packages`) et
 `PORTFOLIO_SERVER_IP` dans l'environnement du shell qui lance Kamal (jamais
 commités, voir `.kamal/secrets`) :
@@ -35,8 +38,8 @@ commités, voir `.kamal/secrets`) :
 ```bash
 export KAMAL_REGISTRY_PASSWORD=$(gh auth token)
 export PORTFOLIO_SERVER_IP=<IP du serveur>
-bin/kamal setup    # première fois seulement
-bin/kamal deploy   # ensuite
+kamal setup    # première fois seulement
+kamal deploy   # ensuite
 ```
 
 Avant le premier déploiement, pointer les enregistrements DNS **A** de
